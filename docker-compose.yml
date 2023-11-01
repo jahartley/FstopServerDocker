@@ -65,6 +65,12 @@ services:
       - TZ=America/Chicago
     volumes:
       - uisp-data:/config
+  iperf3:
+    image: networkstatic/iperf3
+    container_name: iperf3-server
+    ports:
+      - 5201:5201
+    command: '-s'
 
 volumes:
   omada-data:
