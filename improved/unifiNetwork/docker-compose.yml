@@ -1,0 +1,48 @@
+name: unifi-network
+
+networks:
+  ipnet4:
+    external: true
+  unifiNetworkBackend:
+    internal: true
+    driver: ipvlan
+    driver_opts:
+      ipvlan_mode: l2
+
+services:
+  unifi-db:
+    image: docker.io/mongo:7-jammy
+    volumes:
+      - unifi-network:/data/db
+      - /docker-compose/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      unifiNetworkBackend:
+    restart: unless-stopped
+
+  unifi-network-application:
+    image: lscr.io/linuxserver/unifi-network-application:latest
+    depends_on:
+      - unifi-db
+    networks:
+      ipnet4:
+        ipv4_address: 192.168.4.230
+      unifiNetworKBackend:
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - MONGO_USER=unifi
+      - MONGO_PASS=unifi
+      - MONGO_HOST=unifi-db
+      - MONGO_PORT=27017
+      - MONGO_DBNAME=unifi
+      - MEM_LIMIT=1024 #optional
+      - MEM_STARTUP=1024 #optional
+      - MONGO_TLS= #optional
+      - MONGO_AUTHSOURCE= #optional
+    volumes:
+      - unifi-network:/config
+    restart: unless-stopped
+
+volumes:
+  unifi-network:
