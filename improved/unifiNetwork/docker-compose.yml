@@ -3,7 +3,7 @@ name: unifi-network
 networks:
   ipnet4:
     external: true
-  unifiNetworkBackend:
+  unifiNwBend:
     internal: true
     driver: ipvlan
     driver_opts:
@@ -16,7 +16,7 @@ services:
       - unifi-network:/data/db
       - /docker-compose/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
-      unifiNetworkBackend:
+      unifiNwBend:
     restart: unless-stopped
 
   unifi-network-application:
@@ -26,7 +26,7 @@ services:
     networks:
       ipnet4:
         ipv4_address: 192.168.4.230
-      unifiNetworKBackend:
+      unifiNwBend:
     environment:
       - PUID=1000
       - PGID=1000
