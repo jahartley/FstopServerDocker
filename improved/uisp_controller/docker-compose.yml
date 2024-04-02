@@ -1,0 +1,20 @@
+name: uisp_controller
+
+networks:
+  ipnet4:
+    external: true
+
+services:
+  unms:
+    image: nico640/docker-unms:latest
+    restart: always
+    networks:
+      ipnet4:
+        ipv4_address: 192.168.4.231
+    environment:
+      - TZ=America/Chicago
+    volumes:
+      - uisp-data:/config
+
+volumes:
+  uisp-data:
